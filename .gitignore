@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+
+# Next.js build output
+.next
+out
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Deployment/local tooling
+.vercel
+
+# Test and build artifacts
+coverage
+dist
+*.tsbuildinfo
+
+# Logs
+*.log
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
