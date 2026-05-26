@@ -36,17 +36,21 @@ Until Supabase is configured, the app runs in local demo mode. Demo submissions 
 
 ## 5. Vercel
 
-Set these environment variables:
+Set these environment variables in the Vercel project. Add them to Preview and Production unless you intentionally want separate staging values.
 
-- `NEXT_PUBLIC_APP_URL`
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `OPENAI_API_KEY`
-- `OPENAI_MODEL`
-- `RESEND_API_KEY`
-- `RESEND_FROM_EMAIL`
-- `PRODUCT_OWNER_EMAIL`
-- `ADMIN_DASHBOARD_SECRET`
+| Variable | Required for V1 | Where it comes from | Notes |
+|---|---:|---|---|
+| `NEXT_PUBLIC_APP_URL` | Yes | Vercel deployment URL or custom domain | This is public. Use the final app URL in production. |
+| `SUPABASE_URL` | Yes | Supabase project settings | Project URL. Server-side use in this app. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Supabase API settings | Secret. Never expose in browser code or `NEXT_PUBLIC_` variables. |
+| `OPENAI_API_KEY` | Yes | OpenAI platform | Secret. Used to create AI lead summaries. |
+| `OPENAI_MODEL` | Yes | App configuration | Default recommendation for V1: `gpt-4.1-mini`. |
+| `RESEND_API_KEY` | Yes | Resend API keys | Secret. Used to send contractor and homeowner emails. |
+| `RESEND_FROM_EMAIL` | Yes | Resend verified sender/domain | Example: `Business Lead Assistant <intake@yourdomain.com>`. |
+| `ADMIN_DASHBOARD_SECRET` | Yes | You create it | Secret. Use a long random value. This protects the V1 dashboard. |
+| `PRODUCT_OWNER_EMAIL` | Reserved | You create it | Optional for now. The current app does not actively use it yet. |
+
+Do not copy local placeholder values into production. In particular, replace `ADMIN_DASHBOARD_SECRET` with a long private value before deploying.
 
 Deploy staging first, submit one test lead for each pilot client, then promote to production.
 

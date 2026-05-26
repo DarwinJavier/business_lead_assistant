@@ -59,8 +59,8 @@ Then open `.env.local` and fill in your values:
 | `OPENAI_MODEL` | Yes | Model used for structured lead summaries. Default: `gpt-4.1-mini`. |
 | `RESEND_API_KEY` | Yes for emails | Resend API key. |
 | `RESEND_FROM_EMAIL` | Yes for emails | Verified sender, for example `Business Lead Assistant <intake@yourdomain.com>`. |
-| `PRODUCT_OWNER_EMAIL` | Optional/currently reserved | Product owner notification email for future workflows. |
 | `ADMIN_DASHBOARD_SECRET` | Yes | Private admin key used to open and operate the dashboard. |
+| `PRODUCT_OWNER_EMAIL` | Optional/currently reserved | Product owner notification email for future workflows. The current app does not actively use it yet. |
 
 ## Supabase setup
 

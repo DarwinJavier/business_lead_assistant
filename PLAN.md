@@ -302,8 +302,8 @@ Required variables:
 - `OPENAI_MODEL`
 - `RESEND_API_KEY`
 - `RESEND_FROM_EMAIL`
-- `PRODUCT_OWNER_EMAIL`
 - `ADMIN_DASHBOARD_SECRET`
+- `PRODUCT_OWNER_EMAIL` (reserved/optional for now)
 
 What Codex will do:
 
@@ -322,6 +322,13 @@ What the product owner needs to provide:
 Definition of done:
 
 - Vercel has all required environment variables set for production.
+
+Status:
+
+- Required variable list is confirmed against the current code.
+- `.env.example`, `README.md`, and `docs/deployment-guide.md` have been updated.
+- `PRODUCT_OWNER_EMAIL` is documented as optional/reserved because the current app does not actively use it yet.
+- Remaining action: add the real values in Vercel after the Vercel project is created.
 
 ### 5. Prepare the Supabase production database
 
