@@ -140,6 +140,7 @@ export async function POST(request: Request) {
         message: needsMigration
           ? "The database needs the contractor profile migration before these settings can be saved."
           : "Could not save the contractor profile.",
+        detail: process.env.NODE_ENV !== "production" ? result.error.message : undefined,
       },
       { status: 500 },
     );

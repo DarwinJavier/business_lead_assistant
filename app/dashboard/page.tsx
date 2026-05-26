@@ -121,7 +121,21 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     );
   }
 
-  const [clients, leads] = await Promise.all([getClients(), getLeads(params)]);
+  let clients: Awaited<ReturnType<typeof getClients>> = [];
+  let leads: DashboardLeadRow[] = [];
+  const loadErrors: string[] = [];
+
+  try {
+    clients = await getClients();
+  } catch (error) {
+    loadErrors.push(error instanceof Error ? error.message : "Unable to load business profiles.");
+  }
+
+  try {
+    leads = await getLeads(params);
+  } catch (error) {
+    loadErrors.push(error instanceof Error ? error.message : "Unable to load leads.");
+  }
 
   return (
     <main className="min-h-screen bg-mist">
@@ -159,6 +173,21 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
             Business profile
           </Link>
         </nav>
+
+        {loadErrors.length ? (
+          <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+            <p className="font-semibold">Some Supabase data could not be loaded.</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              {loadErrors.map((error) => (
+                <li key={error}>{error}</li>
+              ))}
+            </ul>
+            <p className="mt-2">
+              Check that the Supabase key in `.env.local` is valid, the latest migrations have been run, and the dev server was restarted after
+              env changes.
+            </p>
+          </div>
+        ) : null}
 
         {activeTab === "leads" ? (
           <>

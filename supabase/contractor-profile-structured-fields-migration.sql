@@ -1,4 +1,6 @@
 alter table public.clients
+add column if not exists lead_fit_criteria text not null default 'A strong lead has a clear project description, realistic budget for the requested work, useful timeline context, at least one reliable contact method, and enough detail to decide whether to follow up.',
+add column if not exists business_preferences text,
 add column if not exists business_region text,
 add column if not exists business_city text,
 add column if not exists business_province text,
