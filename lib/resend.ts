@@ -22,6 +22,17 @@ function fromEmail() {
   return value;
 }
 
+async function sendEmail(input: Parameters<ReturnType<typeof getResend>["emails"]["send"]>[0]) {
+  const resend = getResend();
+  const result = await resend.emails.send(input);
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return result.data;
+}
+
 export async function sendContractorLeadNotification({
   client,
   lead,
@@ -41,8 +52,7 @@ export async function sendContractorLeadNotification({
     photoUploads,
   });
 
-  const resend = getResend();
-  return resend.emails.send({
+  return sendEmail({
     from: fromEmail(),
     to: client.notificationEmail,
     subject,
@@ -62,9 +72,8 @@ export async function sendHomeownerConfirmation({
   }
 
   const { subject, html } = homeownerConfirmationEmail({ client, lead });
-  const resend = getResend();
 
-  return resend.emails.send({
+  return sendEmail({
     from: fromEmail(),
     to: lead.homeownerEmail,
     subject,

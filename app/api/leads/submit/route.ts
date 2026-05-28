@@ -264,8 +264,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    await sendContractorLeadNotification({ client, lead, aiSummary, photoUploads });
-    await safeRecordLeadEvent(insertedLead.id, "contractor_email_sent", { photoCount: photoUploads.length });
+    const contractorEmail = await sendContractorLeadNotification({ client, lead, aiSummary, photoUploads });
+    await safeRecordLeadEvent(insertedLead.id, "contractor_email_sent", {
+      photoCount: photoUploads.length,
+      resendEmailId: contractorEmail?.id,
+    });
   } catch (error) {
     await safeRecordLeadEvent(insertedLead.id, "contractor_email_failed", {
       message: error instanceof Error ? error.message : "Unknown email error",
@@ -274,7 +277,11 @@ export async function POST(request: Request) {
 
   try {
     const homeownerEmailResult = await sendHomeownerConfirmation({ client, lead });
-    await safeRecordLeadEvent(insertedLead.id, homeownerEmailResult ? "homeowner_email_sent" : "homeowner_email_skipped", {});
+    await safeRecordLeadEvent(
+      insertedLead.id,
+      homeownerEmailResult ? "homeowner_email_sent" : "homeowner_email_skipped",
+      homeownerEmailResult ? { resendEmailId: homeownerEmailResult.id } : {},
+    );
   } catch (error) {
     await safeRecordLeadEvent(insertedLead.id, "homeowner_email_failed", {
       message: error instanceof Error ? error.message : "Unknown email error",
