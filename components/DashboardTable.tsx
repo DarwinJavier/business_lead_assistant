@@ -1,4 +1,7 @@
-import { Fragment } from "react";
+"use client";
+
+import { Fragment, useState } from "react";
+import { X } from "lucide-react";
 import { LeadSummaryCard } from "@/components/LeadSummaryCard";
 import { LeadFunnelControls } from "@/components/LeadFunnelControls";
 import type { DashboardLeadRow } from "@/lib/leadRows";
@@ -6,6 +9,8 @@ import { getLeadStatusLabel } from "@/lib/leadStatuses";
 import { formatDateTime } from "@/lib/utils";
 
 export function DashboardTable({ leads, adminKey }: { leads: DashboardLeadRow[]; adminKey?: string }) {
+  const [openLeadId, setOpenLeadId] = useState<string | null>(null);
+
   if (!leads.length) {
     return (
       <div className="rounded-lg border border-line bg-white p-8 text-center text-slate-600">
@@ -50,60 +55,88 @@ export function DashboardTable({ leads, adminKey }: { leads: DashboardLeadRow[];
             <td className="border-b border-line px-4 py-4 text-slate-700">{getLeadStatusLabel(lead.status)}</td>
             <td className="border-b border-line px-4 py-4 text-slate-600">{formatDateTime(lead.created_at)}</td>
             <td className="border-b border-line px-4 py-4">
-              <details>
-                <summary className="cursor-pointer rounded-md border border-line px-3 py-2 text-center text-sm font-semibold text-ink">
-                  Open
-                </summary>
-                <div className="fixed inset-x-4 top-20 z-20 mx-auto max-h-[80vh] max-w-4xl overflow-y-auto rounded-lg border border-line bg-white p-5 shadow-2xl">
-                  <div className="grid gap-5">
-                    <LeadSummaryCard summary={lead.ai_summary} />
-                    <LeadFunnelControls leadId={lead.id} currentStatus={lead.status} adminKey={adminKey} />
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="rounded-md border border-line p-4">
-                        <p className="text-sm font-semibold text-ink">Homeowner</p>
-                        <dl className="mt-3 space-y-2 text-sm text-slate-700">
-                          <div>Name: {lead.homeowner_name}</div>
-                          <div>Email: {lead.homeowner_email || "Not provided"}</div>
-                          <div>Phone: {lead.homeowner_phone || "Not provided"}</div>
-                          <div>Preferred contact: {lead.contact_preference}</div>
-                        </dl>
+              <button
+                type="button"
+                onClick={() => setOpenLeadId(lead.id)}
+                className="rounded-md border border-line px-3 py-2 text-center text-sm font-semibold text-ink"
+              >
+                Open
+              </button>
+              {openLeadId === lead.id ? (
+                <div className="fixed inset-0 z-20 bg-ink/30 px-4 py-10" role="presentation" onClick={() => setOpenLeadId(null)}>
+                  <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby={`lead-details-${lead.id}`}
+                    className="mx-auto max-h-[86vh] max-w-4xl overflow-y-auto rounded-lg border border-line bg-white p-5 shadow-2xl"
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    <div className="mb-4 flex items-start justify-between gap-4 border-b border-line pb-4">
+                      <div>
+                        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Lead details</p>
+                        <h2 id={`lead-details-${lead.id}`} className="mt-1 text-xl font-semibold text-ink">
+                          {lead.homeowner_name} - {lead.project_type}
+                        </h2>
                       </div>
-                      <div className="rounded-md border border-line p-4">
-                        <p className="text-sm font-semibold text-ink">Project context</p>
-                        <dl className="mt-3 space-y-2 text-sm text-slate-700">
-                          <div>Timeline: {lead.timeline}</div>
-                          <div>Budget: {lead.budget_range}</div>
-                          <div>Photos/drawings: {lead.has_photos}</div>
-                          {lead.raw_payload?.projectPostalCode ? <div>ZIP/postal: {lead.raw_payload.projectPostalCode}</div> : null}
-                          <div>Status: {getLeadStatusLabel(lead.status)}</div>
-                        </dl>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setOpenLeadId(null)}
+                        className="grid h-9 w-9 shrink-0 place-items-center rounded-md border border-line text-slate-600 transition hover:bg-slate-50 hover:text-ink"
+                        aria-label="Close lead details"
+                      >
+                        <X className="h-4 w-4" aria-hidden="true" />
+                      </button>
                     </div>
-                    {lead.raw_payload?.uploadedPhotos?.length ? (
-                      <div className="rounded-md border border-line p-4">
-                        <p className="text-sm font-semibold text-ink">Uploaded pictures</p>
-                        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                          {lead.raw_payload.uploadedPhotos.map((photo) => (
-                            <a
-                              key={photo.path}
-                              href={photo.signedUrl ?? "#"}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="rounded-md border border-line bg-slate-50 px-3 py-2 text-sm font-medium text-moss transition hover:border-moss"
-                            >
-                              {photo.fileName}
-                            </a>
-                          ))}
+                    <div className="grid gap-5">
+                      <LeadSummaryCard summary={lead.ai_summary} />
+                      <LeadFunnelControls leadId={lead.id} currentStatus={lead.status} adminKey={adminKey} />
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="rounded-md border border-line p-4">
+                          <p className="text-sm font-semibold text-ink">Homeowner</p>
+                          <dl className="mt-3 space-y-2 text-sm text-slate-700">
+                            <div>Name: {lead.homeowner_name}</div>
+                            <div>Email: {lead.homeowner_email || "Not provided"}</div>
+                            <div>Phone: {lead.homeowner_phone || "Not provided"}</div>
+                            <div>Preferred contact: {lead.contact_preference}</div>
+                          </dl>
+                        </div>
+                        <div className="rounded-md border border-line p-4">
+                          <p className="text-sm font-semibold text-ink">Project context</p>
+                          <dl className="mt-3 space-y-2 text-sm text-slate-700">
+                            <div>Timeline: {lead.timeline}</div>
+                            <div>Budget: {lead.budget_range}</div>
+                            <div>Photos/drawings: {lead.has_photos}</div>
+                            {lead.raw_payload?.projectPostalCode ? <div>ZIP/postal: {lead.raw_payload.projectPostalCode}</div> : null}
+                            <div>Status: {getLeadStatusLabel(lead.status)}</div>
+                          </dl>
                         </div>
                       </div>
-                    ) : null}
-                    <div className="rounded-md border border-line p-4">
-                      <p className="text-sm font-semibold text-ink">Project description</p>
-                      <p className="mt-2 whitespace-pre-line text-sm leading-6 text-slate-700">{lead.project_description}</p>
+                      {lead.raw_payload?.uploadedPhotos?.length ? (
+                        <div className="rounded-md border border-line p-4">
+                          <p className="text-sm font-semibold text-ink">Uploaded pictures</p>
+                          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {lead.raw_payload.uploadedPhotos.map((photo) => (
+                              <a
+                                key={photo.path}
+                                href={photo.signedUrl ?? "#"}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="rounded-md border border-line bg-slate-50 px-3 py-2 text-sm font-medium text-moss transition hover:border-moss"
+                              >
+                                {photo.fileName}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+                      <div className="rounded-md border border-line p-4">
+                        <p className="text-sm font-semibold text-ink">Project description</p>
+                        <p className="mt-2 whitespace-pre-line text-sm leading-6 text-slate-700">{lead.project_description}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </details>
+              ) : null}
             </td>
           </tr>
         </Fragment>

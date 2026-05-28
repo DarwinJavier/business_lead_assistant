@@ -328,7 +328,8 @@ Status:
 - Required variable list is confirmed against the current code.
 - `.env.example`, `README.md`, and `docs/deployment-guide.md` have been updated.
 - `PRODUCT_OWNER_EMAIL` is documented as optional/reserved because the current app does not actively use it yet.
-- Remaining action: add the real values in Vercel after the Vercel project is created.
+- Vercel project URL: `https://business-lead-assistant.vercel.app/`.
+- Remaining action: confirm all real values are set in Vercel, especially `NEXT_PUBLIC_APP_URL=https://business-lead-assistant.vercel.app`.
 
 ### 5. Prepare the Supabase production database
 
