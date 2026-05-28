@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ClientBrandHeader } from "@/components/ClientBrandHeader";
+import { ContractorIntakeSelector } from "@/components/ContractorIntakeSelector";
 import { IntakeForm } from "@/components/IntakeForm";
-import { getClientBySlug } from "@/lib/clients";
+import { getClientBySlug, getClients } from "@/lib/clients";
 
 export default async function IntakePage({ params }: { params: Promise<{ clientSlug: string }> }) {
   const { clientSlug } = await params;
-  const client = await getClientBySlug(clientSlug);
+  const [client, clients] = await Promise.all([getClientBySlug(clientSlug), getClients()]);
 
   if (!client) {
     notFound();
@@ -36,6 +37,7 @@ export default async function IntakePage({ params }: { params: Promise<{ clientS
           <Link href="/" className="text-sm font-semibold text-moss">
             Back to pilot home
           </Link>
+          <ContractorIntakeSelector clients={clients} activeSlug={client.slug} />
           <h1 className="mt-5 text-4xl font-semibold leading-tight text-ink">Tell us about your project.</h1>
           <p className="mt-4 leading-7 text-slate-700">
             This guided intake helps {client.businessName} understand the project before the first conversation.
