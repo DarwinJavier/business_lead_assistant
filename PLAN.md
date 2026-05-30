@@ -355,6 +355,16 @@ Definition of done:
 - Production Supabase has the required tables, policies, clients, and storage behavior.
 - A test lead can be saved to production Supabase.
 
+Status:
+
+- Complete for deployment wiring.
+- Production Vercel is connected to the `business-assistant-MVP` Supabase project.
+- Test leads are saved to Supabase with the correct `client_id`.
+- AI summaries and fit scores are populated.
+- Lead status updates work after running the funnel status enum migration.
+- Photo upload wiring was exercised and records `photo_upload_complete`.
+- Remaining launch-data task: replace demo contractor notification emails before using those clients with real contractors.
+
 ### 6. Prepare Resend for real email delivery
 
 Why this matters:
@@ -376,6 +386,16 @@ What the product owner needs to do:
 Definition of done:
 
 - Contractor notification emails and homeowner confirmation emails arrive from the production app.
+
+Status:
+
+- Complete for deployment wiring.
+- Resend API key is configured in Vercel.
+- `RESEND_FROM_EMAIL` formatting was corrected.
+- `darwinhernandez.com` was verified in Resend.
+- New production emails show as delivered in Resend.
+- Email event logging now records real Resend failures and successful `resendEmailId` values.
+- Remaining launch-data task: fake demo addresses such as `owner+clearspace@example.com` will not deliver and should be replaced before a real pilot.
 
 ### 7. Deploy to Vercel staging first
 
@@ -399,6 +419,13 @@ Definition of done:
 
 - Vercel produces a working deployment URL.
 - The deployment build succeeds.
+
+Status:
+
+- Complete.
+- Vercel production URL is `https://business-lead-assistant.vercel.app/`.
+- GitHub is connected to Vercel and pushes to `main` trigger deployment.
+- Build warnings are dependency deprecation warnings, not deployment blockers.
 
 ### 8. Run end-to-end smoke tests
 
@@ -433,6 +460,15 @@ Definition of done:
 
 - One full intake-to-dashboard-to-email loop works for every pilot client.
 
+Status:
+
+- Complete for technical wiring.
+- Smoke test leads were submitted for multiple contractors.
+- Dashboard shows leads under the correct contractor.
+- Supabase confirms lead records, AI completion, fit scores, and email events.
+- Resend confirms delivered emails for real recipient addresses.
+- Remaining launch-data task: confirm the official pilot contractor list and clean up smoke test leads if desired.
+
 ### 9. Promote to production
 
 Why this matters:
@@ -458,6 +494,6 @@ Definition of done:
 
 ## Immediate Next Step
 
-Start with Step 3: put the project under Git source control.
+Start with Step 9: promote to production / launch readiness.
 
-This is the correct next step because the app now builds and dashboard actions have server-side protection. A Git repository gives us a clean deployment path to Vercel and a safety net for future changes.
+This is the correct next step because the technical deployment wiring is working end to end. The remaining work is launch readiness: choose the official pilot clients, confirm real notification emails, decide whether to clean smoke-test data, and prepare the intake links to share.
